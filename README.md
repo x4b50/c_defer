@@ -3,6 +3,9 @@ A very simple implementation and demonstration of defer behavior in C language.
 
 ## Example
 ```c
+#define DEFER_IMPL
+#include "defer.h"
+
 int main() {
     int *tst = calloc(100, sizeof(int));
     defer(tst);
