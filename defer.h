@@ -62,6 +62,7 @@ __defer_list *__dl_last(__def_node *head);
     char _func[DEFER_NAME_LEN]; \
     strncpy(_func, __func__, 128); \
     if (strcmp(_d->fname, _func) == 0) { \
+        printf("freeing:\n"); \
         for (int _i=_d->count; _i>=0; _i--) { \
             printf("%ld\n", (long)_d->list[_i]); \
             free(_d->list[_i]); \
@@ -83,6 +84,8 @@ void __dl_push(__def_node *head, __defer_list val) {
 
 void __dl_pop(__def_node *head) {
     if (head->next == NULL) {
+        // TODO: idk if this is a good idea, might be use after free if first
+        // allocation is cleaned up and then you make a new one
         free(head);
     }
     __def_node *current = head;
