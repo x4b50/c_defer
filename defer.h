@@ -84,9 +84,8 @@ void __dl_push(__def_node *head, __defer_list val) {
 
 void __dl_pop(__def_node *head) {
     if (head->next == NULL) {
-        // TODO: idk if this is a good idea, might be use after free if first
-        // allocation is cleaned up and then you make a new one
-        free(head);
+        __def_node h;
+        *head = h;
     }
     __def_node *current = head;
     while (current->next->next != NULL) {

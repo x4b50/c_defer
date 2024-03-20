@@ -1,5 +1,5 @@
 # C defer
-A very simple implementation and demonstration of defer behavior in C language.
+A header only implementation of defer behavior in C language.
 
 ## Example
 ```c
