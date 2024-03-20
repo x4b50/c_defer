@@ -16,17 +16,17 @@ typedef struct {
 } __defer_list;
 
 // linked list if defers
-typedef struct __def_node {
+typedef struct __defer_node {
     __defer_list val;
-    struct __def_node *next;
-} __def_node;
+    struct __defer_node *next;
+} __defer_node;
 
 // add a new list of defers to ll
-void __dl_push(__def_node *head, __defer_list val);
+void __dl_push(__defer_node *head, __defer_list val);
 // remove the last list of defers
-void __dl_pop(__def_node *head);
+void __dl_pop(__defer_node *head);
 // get the last list of defers
-__defer_list *__dl_last(__def_node *head);
+__defer_list *__dl_last(__defer_node *head);
 
 // macro for adding defer to either the list for the function or creating a new one
 #define defer(v) { \
@@ -72,22 +72,22 @@ __defer_list *__dl_last(__def_node *head);
 } return v
 
 #ifdef DEFER_IMPL
-void __dl_push(__def_node *head, __defer_list val) {
-    __def_node *current = head;
+void __dl_push(__defer_node *head, __defer_list val) {
+    __defer_node *current = head;
     while (current->next != NULL) {
         current = current->next;
     }
-    current->next = (__def_node*) malloc(sizeof(__def_node));
+    current->next = (__defer_node*) malloc(sizeof(__defer_node));
     current->next->val = val;
     current->next->next = NULL;
 }
 
-void __dl_pop(__def_node *head) {
+void __dl_pop(__defer_node *head) {
     if (head->next == NULL) {
-        __def_node h;
+        __defer_node h;
         *head = h;
     }
-    __def_node *current = head;
+    __defer_node *current = head;
     while (current->next->next != NULL) {
         current = current->next;
     }
@@ -95,13 +95,13 @@ void __dl_pop(__def_node *head) {
     current->next = NULL;
 }
 
-__defer_list *__dl_last(__def_node *head) {
+__defer_list *__dl_last(__defer_node *head) {
     __defer_list *ret;
     if (head->next == NULL) {
         ret = &head->val;
         return ret;
     }
-    __def_node *current = head->next;
+    __defer_node *current = head->next;
     while (current->next != NULL) {
         current = current->next;
     }
@@ -110,5 +110,5 @@ __defer_list *__dl_last(__def_node *head) {
 }
 
 // linked list of defer lists for each function
-__def_node __defers;
+__defer_node __defers;
 #endif
