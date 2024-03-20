@@ -2,10 +2,10 @@
 #include <string.h>
 
 #ifndef DEFER_COUNT
-#define DEFER_COUNT 32
+#define DEFER_COUNT 8
 #endif
 #ifndef DEFER_NAME_LEN
-#define DEFER_NAME_LEN 128
+#define DEFER_NAME_LEN 64
 #endif
 
 // a list of defer allocations in a given function
@@ -32,13 +32,13 @@ __defer_list *__dl_last(__def_node *head);
 #define defer(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
-    strncpy(_func, __func__, 128); \
+    strncpy(_func, __func__, DEFER_NAME_LEN); \
     if (strcmp(_d->fname, _func) == 0) { \
         _d->count += 1; \
         _d->list[_d->count] = v; \
     } else { \
         __defer_list _d = {.list=v, .count=0}; \
-        strncpy(_d.fname, __func__, 128); \
+        strncpy(_d.fname, __func__, DEFER_NAME_LEN); \
         __dl_push(&__defers, _d); \
     } \
 }
@@ -47,7 +47,7 @@ __defer_list *__dl_last(__def_node *head);
 #define return(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
-    strncpy(_func, __func__, 128); \
+    strncpy(_func, __func__, DEFER_NAME_LEN); \
     if (strcmp(_d->fname, _func) == 0) { \
         for (int _i=_d->count; _i>=0; _i--) { \
             free(_d->list[_i]); \
@@ -60,7 +60,7 @@ __defer_list *__dl_last(__def_node *head);
 #define return_dbg(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
-    strncpy(_func, __func__, 128); \
+    strncpy(_func, __func__, DEFER_NAME_LEN); \
     if (strcmp(_d->fname, _func) == 0) { \
         printf("freeing:\n"); \
         for (int _i=_d->count; _i>=0; _i--) { \
