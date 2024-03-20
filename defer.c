@@ -2,9 +2,11 @@
 #include <stdlib.h>
 
 #define DEFER_IMPL
+// #define DEFER_PEDANTIC
 #include "defer.h"
 
 int test_defer() {
+    defers(printf("cleanup function in defer\n"));
     int *tst = calloc(100, sizeof(int));
     defer(tst);
     printf("%ld\n", (long)tst);
@@ -37,7 +39,7 @@ int main() {
     printf("%ld\n", (long)t2);
 
     printf("-------------\n");
-    int _ = test_defer();
+    test_defer();
     printf("-------------\n");
     return_dbg(0);
 }
