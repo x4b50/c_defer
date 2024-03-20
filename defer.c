@@ -3,20 +3,22 @@
 #include <string.h>
 
 // /*
-// can be replaced w/ linked list if you want a more versatile solution
 #define DEFER_COUNT 32
 #define DEFER_NAME_LEN 128
+// a list of defer allocations in a given function
 typedef struct {
     char fname[DEFER_NAME_LEN];
     void *list[DEFER_COUNT];
     int count;
 } __defer_list;
 
+// linked list if defers
 typedef struct __def_node {
     __defer_list val;
     struct __def_node *next;
 } __def_node;
 
+// add a new list of defers to ll
 void __dl_push(__def_node *head, __defer_list val) {
     __def_node *current = head;
     while (current->next != NULL) {
@@ -27,6 +29,7 @@ void __dl_push(__def_node *head, __defer_list val) {
     current->next->next = NULL;
 }
 
+// remove the last list of defers
 void __dl_pop(__def_node *head) {
     if (head->next == NULL) {
         free(head);
@@ -39,6 +42,7 @@ void __dl_pop(__def_node *head) {
     current->next = NULL;
 }
 
+// get the last list of defers
 __defer_list *__dl_last(__def_node *head) {
     __defer_list *ret;
     if (head->next == NULL) {
@@ -53,8 +57,10 @@ __defer_list *__dl_last(__def_node *head) {
     return ret;
 }
 
+// linked list of defer lists for each function
 __def_node __defers;
 
+// macro for adding defer to either the list for the function or creating a new one
 #define defer(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
@@ -69,6 +75,7 @@ __def_node __defers;
     } \
 }
 
+// free all defers allocated in the given function and return
 #define return(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
@@ -81,7 +88,7 @@ __def_node __defers;
     } \
 } return v
 
-// just to demonstrate that it works
+// debug just to demonstrate that it works
 #define return_dbg(v) { \
     __defer_list *_d = __dl_last(&__defers); \
     char _func[DEFER_NAME_LEN]; \
