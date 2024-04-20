@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef DEFER_DEF
+#define DEFER_DEF
+
 #ifndef DEFER_COUNT
 #define DEFER_COUNT 8
 #endif
@@ -127,7 +130,7 @@ __defers_list *__dsl_last(__defers_node *head);
         __dl_pop(&__defer); \
     } \
 } return v
-#else
+#else // DEFER_PEDANTIC
 #define return(v) { \
     __defer_list *_d = __dl_last(&__defer); \
     char _func[DEFER_NAME_LEN]; \
@@ -153,7 +156,8 @@ __defers_list *__dsl_last(__defers_node *head);
         __dl_pop(&__defer); \
     } \
 } return v
-#endif
+#endif // DEFER_PEDANTIC
+#endif // DEFER_DEF
 
 #ifdef DEFER_IMPL
 void __dl_push(__defer_node *head, __defer_list val) {
@@ -235,4 +239,4 @@ __defers_list *__dsl_last(__defers_node *head) {
 }
 __defers_node __defers;
 #endif
-#endif
+#endif // DEFER_IMPL
